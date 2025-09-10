@@ -13,10 +13,10 @@ group :development, :test do
   gem "faker"
   gem "pry-rails"
   gem "pry-byebug"
+  gem "rspec-rails"
   gem "rubocop-rails-omakase", require: false
 end
 
 group :test do
-  gem "rspec-rails"
   gem "shoulda-matchers"
 end
