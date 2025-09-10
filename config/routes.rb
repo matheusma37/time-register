@@ -3,7 +3,10 @@ Rails.application.routes.draw do
 
   scope :api, defaults: { format: :json } do
     namespace :v1 do
-      resources :users
+      resources :users do
+        resources :time_logs, only: [ :index ]
+      end
+      resources :time_logs
     end
   end
 end

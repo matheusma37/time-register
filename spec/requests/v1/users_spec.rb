@@ -33,6 +33,17 @@ RSpec.describe "/api/v1/users", type: :request do
       expect(response).to be_successful
       expect(JSON.parse(response.body)).to match(a_hash_including('name' => user.name, 'email' => user.email))
     end
+
+    context "when user is not found" do
+      it "renders a JSON response with errors" do
+        get v1_user_url(0)
+
+        expect(response).to have_http_status(:not_found)
+        expect(JSON.parse(response.body)).to match(
+          a_hash_including("errors" => [ %(Couldn't find User with 'id'="0") ])
+        )
+      end
+    end
   end
 
   describe "POST /create" do
