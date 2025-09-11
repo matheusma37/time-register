@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :time_log do
     association :user
-    clock_in { Time.current }
+    clock_in { Time.current + (1..4).to_a.sample.hours }
     clock_out { nil }
 
     trait :with_clock_out do
