@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "/time_logs", type: :request do
+RSpec.describe "/api/v1/time_logs", type: :request do
   let(:time_current) { Time.current.change(usec: 0) }
   let(:user) { create(:user) }
 
