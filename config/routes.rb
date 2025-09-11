@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   scope :api, defaults: { format: :json } do
     namespace :v1 do
       resources :users do
+        post :reports, on: :member
+
         resources :time_logs, only: [ :index ]
       end
       resources :time_logs
