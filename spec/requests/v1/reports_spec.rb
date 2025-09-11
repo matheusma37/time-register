@@ -1,0 +1,31 @@
+require 'rails_helper'
+
+RSpec.describe '/api/v1/reports', type: :request do
+  let(:job_id) { 'fake-job-id' }
+  let(:mock_status) do
+    double(
+      'ActiveJob::Status',
+      status: :completed,
+      progress: 0.5,
+      completed?: true,
+      file_url: 'http://example.com/file.csv'
+    )
+  end
+
+  before do
+    allow(ActiveJob::Status).to receive(:get).with(job_id).and_return(mock_status)
+  end
+
+  describe 'GET /status' do
+    it 'returns job status and progress' do
+      get status_v1_report_url(job_id), as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(JSON.parse(response.body)).to include(
+        'process_id' => job_id,
+        'status' => 'completed',
+        'progress' => 50.0
+      )
+    end
+  end
+end

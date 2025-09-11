@@ -9,6 +9,11 @@ Rails.application.routes.draw do
         resources :time_logs, only: [ :index ]
       end
       resources :time_logs
+      resources :reports, param: :process_id, only: [] do
+        member do
+          get :status
+        end
+      end
     end
   end
 end
