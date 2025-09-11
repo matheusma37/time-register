@@ -122,4 +122,26 @@ RSpec.describe "/api/v1/users", type: :request do
       expect { delete v1_user_url(user), as: :json }.to change(User, :count).by(-1)
     end
   end
+
+  describe "POST /reports" do
+    let(:job_id) { 'fake-job-id' }
+    let(:mock_status) { double('ActiveJob::Status', status: :queued) }
+
+    before do
+      allow(GenerateReportsJob).to receive(:perform_later).and_return(
+        instance_double('GenerateReportsJob', job_id: job_id)
+      )
+      allow(ActiveJob::Status).to receive(:get).with(job_id).and_return(mock_status)
+    end
+
+    it 'enqueues GenerateReportsJob and returns job_id' do
+      user = create(:user)
+
+      post reports_v1_user_url(user.id), params: { start_date: '2025-09-10', end_date: '2025-09-11' }, as: :json
+
+      expect(response).to have_http_status(:accepted)
+      expect(GenerateReportsJob).to have_received(:perform_later)
+      expect(JSON.parse(response.body)).to include('process_id' => job_id)
+    end
+  end
 end

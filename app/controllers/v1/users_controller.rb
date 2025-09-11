@@ -28,6 +28,17 @@ module V1
 
     def destroy = @user.destroy!
 
+    def reports
+      job_id = GenerateReportsJob.perform_later(
+        params.expect(:id),
+        params.expect(:start_date),
+        params.expect(:end_date)
+      ).job_id
+      status = ActiveJob::Status.get(job_id)
+
+      render json: { process_id: job_id, status: status.status }, status: :accepted
+    end
+
     private
 
     def set_user

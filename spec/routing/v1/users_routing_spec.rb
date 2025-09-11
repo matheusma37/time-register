@@ -25,5 +25,9 @@ RSpec.describe V1::UsersController, type: :routing do
     it "routes to #destroy" do
       expect(delete: "/api/v1/users/1").to route_to("v1/users#destroy", id: "1", format: :json)
     end
+
+    it "routes to #reports" do
+      expect(post: "/api/v1/users/1/reports").to route_to("v1/users#reports", id: "1", format: :json)
+    end
   end
 end
