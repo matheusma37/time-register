@@ -28,4 +28,13 @@ RSpec.describe '/api/v1/reports', type: :request do
       )
     end
   end
+
+  describe 'GET /download' do
+    it 'redirects to file_url if job is completed' do
+      get download_v1_report_url(job_id), as: :json
+
+      expect(response).to have_http_status(:found)
+      expect(response).to redirect_to('http://example.com/file.csv')
+    end
+  end
 end

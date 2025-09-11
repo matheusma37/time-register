@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       resources :reports, param: :process_id, only: [] do
         member do
           get :status
+          get :download
         end
       end
     end
