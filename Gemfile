@@ -7,6 +7,7 @@ gem "jbuilder"
 gem "activejob-status"
 gem "sidekiq"
 gem "redis", ">= 4.0.1"
+gem "csv"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 group :development, :test do
