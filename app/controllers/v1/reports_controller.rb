@@ -11,7 +11,7 @@ module V1
       job_id = params.expect(:process_id)
       status = ActiveJob::Status.get(job_id)
 
-      redirect_to status.file_url, allow_other_host: true if status.completed?
+      redirect_to status[:file_url], allow_other_host: true if status.completed?
     end
   end
 end

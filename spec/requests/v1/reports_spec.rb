@@ -7,12 +7,12 @@ RSpec.describe '/api/v1/reports', type: :request do
       'ActiveJob::Status',
       status: :completed,
       progress: 0.5,
-      completed?: true,
-      file_url: 'http://example.com/file.csv'
+      completed?: true
     )
   end
 
   before do
+    allow(mock_status).to receive(:[]).with(:file_url).and_return('http://example.com/file.csv')
     allow(ActiveJob::Status).to receive(:get).with(job_id).and_return(mock_status)
   end
 
