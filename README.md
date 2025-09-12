@@ -98,11 +98,11 @@ docker-compose run app bundle exec rspec
 - `POST /api/v1/users/:id/reports` — Gera relatório de horários
 
 #### Time Logs
-- `GET /api/v1/time_logs` — Lista todos os registros
-- `POST /api/v1/time_logs` — Cria registro de horário
-- `GET /api/v1/time_logs/:id` — Detalha registro
-- `PATCH/PUT /api/v1/time_logs/:id` — Atualiza registro
-- `DELETE /api/v1/time_logs/:id` — Remove registro
+- `GET /api/v1/time_registers` — Lista todos os registros
+- `POST /api/v1/time_registers` — Cria registro de horário
+- `GET /api/v1/time_registers/:id` — Detalha registro
+- `PATCH/PUT /api/v1/time_registers/:id` — Atualiza registro
+- `DELETE /api/v1/time_registers/:id` — Remove registro
 
 #### Relatórios
 - `GET /api/v1/reports/:process_id/status` — Status do relatório
@@ -190,9 +190,9 @@ POST /api/v1/users/1/reports
 }
 ```
 
-**Listar time_logs**
+**Listar time_registers**
 ```http
-GET /api/v1/time_logs
+GET /api/v1/time_registers
 ```
 **Response:**
 ```json
@@ -202,11 +202,11 @@ GET /api/v1/time_logs
 ]
 ```
 
-**Criar time_log**
+**Criar time_register**
 ```http
-POST /api/v1/time_logs
+POST /api/v1/time_registers
 {
-  "time_log": { "user_id": 1, "clock_in": "2024-06-01T08:00:00Z", "clock_out": "2024-06-01T18:00:00Z" }
+  "time_register": { "user_id": 1, "clock_in": "2024-06-01T08:00:00Z", "clock_out": "2024-06-01T18:00:00Z" }
 }
 ```
 **Response:**
@@ -219,9 +219,9 @@ POST /api/v1/time_logs
 }
 ```
 
-**Detalhar time_log**
+**Detalhar time_register**
 ```http
-GET /api/v1/time_logs/1
+GET /api/v1/time_registers/1
 ```
 **Response:**
 ```json
@@ -233,11 +233,11 @@ GET /api/v1/time_logs/1
 }
 ```
 
-**Atualizar time_log**
+**Atualizar time_register**
 ```http
-PATCH /api/v1/time_logs/1
+PATCH /api/v1/time_registers/1
 {
-  "time_log": { "clock_in": "2024-06-01T08:10:00Z", "clock_out": "2024-06-01T18:05:00Z" }
+  "time_register": { "clock_in": "2024-06-01T08:10:00Z", "clock_out": "2024-06-01T18:05:00Z" }
 }
 ```
 **Response:**
@@ -250,9 +250,9 @@ PATCH /api/v1/time_logs/1
 }
 ```
 
-**Remover time_log**
+**Remover time_register**
 ```http
-DELETE /api/v1/time_logs/1
+DELETE /api/v1/time_registers/1
 ```
 **Response:**
 Status 204 No Content
