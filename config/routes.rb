@@ -6,9 +6,9 @@ Rails.application.routes.draw do
       resources :users do
         post :reports, on: :member
 
-        resources :time_logs, only: [ :index ]
+        resources :time_registers, only: [ :index ], controller: :time_logs
       end
-      resources :time_logs
+      resources :time_registers, controller: :time_logs
       resources :reports, param: :process_id, only: [] do
         member do
           get :status
