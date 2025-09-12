@@ -10,6 +10,8 @@ services:
       RAILS_ENV: development
       REDIS_URL: redis://redis:6379/0
       POSTGRES_HOST: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       APP_HOST: http://localhost:3000
     volumes:
       - .:/app
