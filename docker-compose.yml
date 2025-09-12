@@ -1,25 +1,39 @@
 version: "3.9"
 
 services:
-  web:
+  app:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    command: bin/rails server -b 0.0.0.0 -p 3000
+    command: bin/rails server -b 0.0.0.0
+    environment:
+      RAILS_ENV: development
+      REDIS_URL: redis://redis:6379/0
+      POSTGRES_HOST: db
+      APP_HOST: http://localhost:3000
     volumes:
       - .:/app
       - bundle_cache:/usr/local/bundle
     ports:
       - "3000:3000"
     depends_on:
-      - db
-      - sidekiq
-    environment:
-      REDIS_URL: redis://redis:6379/0
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      sidekiq:
+        condition: service_started
+    networks:
+      - appnet
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/up"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
 
   db:
     image: postgres:16
-    container_name: postgres
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -28,10 +42,18 @@ services:
       - pg_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - appnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
 
   sidekiq:
     build: .
     command: bundle exec sidekiq -C config/sidekiq.yml
+    restart: always
     volumes:
       - .:/app
       - bundle_cache:/usr/local/bundle
@@ -39,15 +61,34 @@ services:
       - redis
     environment:
       REDIS_URL: redis://redis:6379/0
+    networks:
+      - appnet
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f sidekiq || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7
     ports:
       - "6379:6379"
+    restart: always
     volumes:
       - redis_data:/data
+    networks:
+      - appnet
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
 
 volumes:
   pg_data:
   bundle_cache:
   redis_data:
+
+networks:
+  appnet:
+    driver: bridge
