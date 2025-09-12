@@ -110,6 +110,18 @@ docker-compose run app bundle exec rspec
 
 ### Exemplos de request/response
 
+**Listar usuários**
+```http
+GET /api/v1/users
+```
+**Response:**
+```json
+[
+  { "id": 1, "name": "João", "email": "joao@email.com" },
+  { "id": 2, "name": "Maria", "email": "maria@email.com" }
+]
+```
+
 **Criar usuário**
 ```http
 POST /api/v1/users
@@ -126,7 +138,43 @@ POST /api/v1/users
 }
 ```
 
-**Gerar relatório**
+**Detalhar usuário**
+```http
+GET /api/v1/users/1
+```
+**Response:**
+```json
+{
+  "id": 1,
+  "name": "João",
+  "email": "joao@email.com"
+}
+```
+
+**Atualizar usuário**
+```http
+PATCH /api/v1/users/1
+{
+  "user": { "name": "João da Silva", "email": "joao.silva@email.com" }
+}
+```
+**Response:**
+```json
+{
+  "id": 1,
+  "name": "João da Silva",
+  "email": "joao.silva@email.com"
+}
+```
+
+**Remover usuário**
+```http
+DELETE /api/v1/users/1
+```
+**Response:**
+Status 204 No Content
+
+**Gerar relatório de horários**
 ```http
 POST /api/v1/users/1/reports
 {
@@ -141,6 +189,73 @@ POST /api/v1/users/1/reports
   "status": "queued"
 }
 ```
+
+**Listar time_logs**
+```http
+GET /api/v1/time_logs
+```
+**Response:**
+```json
+[
+  { "id": 1, "user_id": 1, "clock_in": "2024-06-01T08:00:00Z", "clock_out": "2024-06-01T18:00:00Z" },
+  { "id": 2, "user_id": 1, "clock_in": "2024-06-02T08:05:00Z", "clock_out": "2024-06-02T18:10:00Z" }
+]
+```
+
+**Criar time_log**
+```http
+POST /api/v1/time_logs
+{
+  "time_log": { "user_id": 1, "clock_in": "2024-06-01T08:00:00Z", "clock_out": "2024-06-01T18:00:00Z" }
+}
+```
+**Response:**
+```json
+{
+  "id": 1,
+  "user_id": 1,
+  "clock_in": "2024-06-01T08:00:00Z",
+  "clock_out": "2024-06-01T18:00:00Z"
+}
+```
+
+**Detalhar time_log**
+```http
+GET /api/v1/time_logs/1
+```
+**Response:**
+```json
+{
+  "id": 1,
+  "user_id": 1,
+  "clock_in": "2024-06-01T08:00:00Z",
+  "clock_out": "2024-06-01T18:00:00Z"
+}
+```
+
+**Atualizar time_log**
+```http
+PATCH /api/v1/time_logs/1
+{
+  "time_log": { "clock_in": "2024-06-01T08:10:00Z", "clock_out": "2024-06-01T18:05:00Z" }
+}
+```
+**Response:**
+```json
+{
+  "id": 1,
+  "user_id": 1,
+  "clock_in": "2024-06-01T08:10:00Z",
+  "clock_out": "2024-06-01T18:05:00Z"
+}
+```
+
+**Remover time_log**
+```http
+DELETE /api/v1/time_logs/1
+```
+**Response:**
+Status 204 No Content
 
 **Status do relatório**
 ```http
