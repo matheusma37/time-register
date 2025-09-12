@@ -12,7 +12,7 @@ module V1
       @time_log = TimeLog.new(create_time_log_params)
 
       if @time_log.save
-        render :show, status: :created, location: v1_time_log_url(@time_log)
+        render :show, status: :created, location: v1_time_register_url(@time_log)
       else
         render json: { errors: @time_log.errors.full_messages }, status: :unprocessable_content
       end
@@ -20,7 +20,7 @@ module V1
 
     def update
       if @time_log.update(update_time_log_params)
-        render :show, status: :ok, location: v1_time_log_url(@time_log)
+        render :show, status: :ok, location: v1_time_register_url(@time_log)
       else
         render json: { errors: @time_log.errors.full_messages }, status: :unprocessable_content
       end
@@ -34,7 +34,7 @@ module V1
       @time_log = TimeLog.find(params.expect(:id))
     end
 
-    def create_time_log_params = params.expect(time_log: %i[ user_id clock_in clock_out ])
-    def update_time_log_params = params.require(:time_log).permit(:clock_in, :clock_out)
+    def create_time_log_params = params.expect(time_register: %i[ user_id clock_in clock_out ])
+    def update_time_log_params = params.require(:time_register).permit(:clock_in, :clock_out)
   end
 end
