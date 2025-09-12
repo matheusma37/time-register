@@ -5,8 +5,8 @@ RSpec.describe 'User reports integration', type: :request do
   let(:updated_params) { { user: { name: 'Updated User', email: 'updated@example.com' } } }
   let(:time_log_params) do
     [
-      { time_log: { clock_in: '2025-09-10T08:00:00Z', clock_out: '2025-09-10T17:00:00Z' } },
-      { time_log: { clock_in: '2025-09-11T08:00:00Z', clock_out: '2025-09-11T17:00:00Z' } }
+      { clock_in: '2025-09-10T08:00:00Z', clock_out: '2025-09-10T17:00:00Z' },
+      { clock_in: '2025-09-11T08:00:00Z', clock_out: '2025-09-11T17:00:00Z' }
     ]
   end
   let(:job_id) { 'fake-job-id' }
@@ -35,7 +35,7 @@ RSpec.describe 'User reports integration', type: :request do
     expect(JSON.parse(response.body)['name']).to eq('Updated User')
 
     time_log_params.each do |params|
-      post v1_time_logs_url, params: params[:time_log].merge(user_id: user_id), as: :json
+      post v1_time_registers_url, params: { time_register: params.merge(user_id: user_id) }, as: :json
       expect(response).to have_http_status(:created)
     end
 
@@ -62,10 +62,22 @@ RSpec.describe 'User reports integration', type: :request do
     expect(response).to have_http_status(:created)
     user_id = JSON.parse(response.body)['id']
 
-    post v1_time_logs_url, params: { user_id: user_id, clock_in: '2025-09-13T08:00:00Z', clock_out: nil }, as: :json
+    post(
+      v1_time_registers_url,
+      params: {
+        time_register: { user_id: user_id, clock_in: '2025-09-13T08:00:00Z', clock_out: nil }
+      },
+      as: :json
+    )
     expect(response).to have_http_status(:created)
 
-    post v1_time_logs_url, params: { user_id: user_id, clock_in: '2025-09-14T08:00:00Z', clock_out: nil }, as: :json
+    post(
+      v1_time_registers_url,
+      params: {
+        time_register: { user_id: user_id, clock_in: '2025-09-14T08:00:00Z', clock_out: nil }
+      },
+      as: :json
+    )
     expect(response).to have_http_status(:unprocessable_content).or have_http_status(:unprocessable_entity)
     expect(JSON.parse(response.body)['errors']).to be_present
   end

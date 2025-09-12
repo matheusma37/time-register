@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "/api/v1/time_logs", type: :request do
+RSpec.describe "/api/v1/time_registers", type: :request do
   let(:time_current) { Time.current.change(usec: 0) }
   let(:user) { create(:user) }
 
@@ -24,7 +24,7 @@ RSpec.describe "/api/v1/time_logs", type: :request do
     it "renders a successful response" do
       time_log = create(:time_log, user: user)
 
-      get v1_time_logs_url
+      get v1_time_registers_url
 
       expect(response).to be_successful
       expect(JSON.parse(response.body)).to include(
@@ -41,7 +41,7 @@ RSpec.describe "/api/v1/time_logs", type: :request do
         first_time_log = create(:time_log, user: user)
         second_time_log = create(:time_log)
 
-        get v1_user_time_logs_url(user_id: user.id)
+        get v1_user_time_registers_url(user_id: user.id)
 
         expect(response).to be_successful
         expect(JSON.parse(response.body)).to include(
@@ -64,7 +64,7 @@ RSpec.describe "/api/v1/time_logs", type: :request do
         it "renders a successful response" do
           user = create(:user)
 
-          get v1_user_time_logs_url(user_id: user.id)
+          get v1_user_time_registers_url(user_id: user.id)
 
           expect(response).to be_successful
           expect(JSON.parse(response.body)).to eq([])
@@ -77,7 +77,7 @@ RSpec.describe "/api/v1/time_logs", type: :request do
     it "renders a successful response" do
       time_log = create(:time_log)
 
-      get v1_time_log_url(time_log)
+      get v1_time_register_url(time_log)
 
       expect(response).to be_successful
       expect(JSON.parse(response.body)).to match(
@@ -91,7 +91,7 @@ RSpec.describe "/api/v1/time_logs", type: :request do
 
     context "when time log is not found" do
       it "renders a JSON response with errors" do
-        get v1_time_log_url(0)
+        get v1_time_register_url(0)
 
         expect(response).to have_http_status(:not_found)
         expect(JSON.parse(response.body)).to match(
@@ -105,12 +105,12 @@ RSpec.describe "/api/v1/time_logs", type: :request do
     context "with valid parameters" do
       it "creates a new TimeLog" do
         expect {
-          post v1_time_logs_url, params: { time_log: valid_attributes }
+          post v1_time_registers_url, params: { time_register: valid_attributes }
         }.to change(TimeLog, :count).by(1)
       end
 
       it "renders a JSON response with the new time_log" do
-        post v1_time_logs_url, params: { time_log: valid_attributes }
+        post v1_time_registers_url, params: { time_register: valid_attributes }
 
         expect(response).to have_http_status(:created)
         expect(JSON.parse(response.body)).to match(a_hash_including(**valid_attributes.as_json))
@@ -120,12 +120,12 @@ RSpec.describe "/api/v1/time_logs", type: :request do
     context "with invalid parameters" do
       it "does not create a new TimeLog" do
         expect {
-          post v1_time_logs_url, params: { time_log: invalid_attributes }
+          post v1_time_registers_url, params: { time_register: invalid_attributes }
         }.to change(TimeLog, :count).by(0)
       end
 
       it "renders a JSON response with errors for the new time_log" do
-        post v1_time_logs_url, params: { time_log: invalid_attributes }
+        post v1_time_registers_url, params: { time_register: invalid_attributes }
 
         expect(response).to have_http_status(:unprocessable_content)
         expect(JSON.parse(response.body)).to include(
@@ -138,7 +138,7 @@ RSpec.describe "/api/v1/time_logs", type: :request do
           time_log = create(:time_log)
           invalid_attributes.update(clock_out: nil, user_id: time_log.user_id)
 
-          post v1_time_logs_url, params: { time_log: invalid_attributes }
+          post v1_time_registers_url, params: { time_register: invalid_attributes }
 
           expect(response).to have_http_status(:unprocessable_content)
           expect(JSON.parse(response.body)).to include(
@@ -161,7 +161,7 @@ RSpec.describe "/api/v1/time_logs", type: :request do
       it "updates the requested time_log" do
         time_log = create(:time_log)
 
-        put v1_time_log_url(time_log), params: { time_log: new_attributes }
+        put v1_time_register_url(time_log), params: { time_register: new_attributes }
 
         time_log.reload
         expect(time_log.clock_in).to eq(new_attributes[:clock_in])
@@ -171,7 +171,7 @@ RSpec.describe "/api/v1/time_logs", type: :request do
       it "renders a JSON response with the time_log" do
         time_log = create(:time_log)
 
-        put v1_time_log_url(time_log), params: { time_log: new_attributes }
+        put v1_time_register_url(time_log), params: { time_register: new_attributes }
 
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to match(a_hash_including(**new_attributes.as_json))
@@ -182,7 +182,7 @@ RSpec.describe "/api/v1/time_logs", type: :request do
       it "renders a JSON response with errors for the time_log" do
         time_log = create(:time_log)
 
-        put v1_time_log_url(time_log), params: { time_log: invalid_attributes }
+        put v1_time_register_url(time_log), params: { time_register: invalid_attributes }
 
         expect(response).to have_http_status(:unprocessable_content)
         expect(JSON.parse(response.body)).to include('errors' => [ "Clock out must be after clock_in" ])
@@ -195,7 +195,7 @@ RSpec.describe "/api/v1/time_logs", type: :request do
       it "does not update the user_id" do
         time_log = create(:time_log)
 
-        put v1_time_log_url(time_log), params: { time_log: unpermitted_attributes }
+        put v1_time_register_url(time_log), params: { time_register: unpermitted_attributes }
 
         expect(response).to have_http_status(:ok)
         time_log.reload
@@ -208,7 +208,7 @@ RSpec.describe "/api/v1/time_logs", type: :request do
     it "destroys the requested time_log" do
       time_log = create(:time_log)
 
-      expect { delete v1_time_log_url(time_log) }.to change(TimeLog, :count).by(-1)
+      expect { delete v1_time_register_url(time_log) }.to change(TimeLog, :count).by(-1)
     end
   end
 end
