@@ -40,3 +40,6 @@
 /.dockerignore
 /Dockerfile*
 /docker-compose.yml
+
+# Ignore SimpleCov-related files
+/coverage/*
